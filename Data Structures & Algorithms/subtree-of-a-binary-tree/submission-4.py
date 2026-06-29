@@ -8,19 +8,29 @@ from collections import deque
 class Solution:   
     def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
         
-        def stringTree(root1):
-            if not root1:
-                return ["N"]
-            else:
-                cur = [str(root1.val)]
-                cur.extend(stringTree(root1.left))
-                cur.extend(stringTree(root1.right))
-            return cur
-        
-        #print(stringTree(root))
-        #print(stringTree(subRoot))
+        def isSame(p, s):
+            # s is the subtree
+            if p is None and s is None:
+                return True
+            elif s is not None and p is None:
+                return False
+            elif s is None and p is not None:
+                return False
+            
+            if p.val != s.val:
+                return False
+            return isSame(p.left, s.left) and isSame(p.right, s.right)
 
-        s1 = ' '.join(stringTree(root))
-        s2 = ' '.join(stringTree(subRoot))
-        return s2 in s1
+        q = deque([root])
 
+        while q:
+            cur = q.popleft()
+            if cur.val == subRoot.val:
+                if isSame(cur, subRoot):
+                    return True
+            
+            if cur.left:
+                q.append(cur.left)
+            if cur.right:
+                q.append(cur.right)
+        return False
