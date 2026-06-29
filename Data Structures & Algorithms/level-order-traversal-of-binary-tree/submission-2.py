@@ -4,20 +4,21 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
+from collections import deque
 class Solution:
     def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         if not root:
             return []
-        ans = []
-        def traverse(root1, depth, ls):
-            if root1 is None:
-                return None
-            else:
-                if len(ls) == depth:
-                    ls.append([])
+        q = deque([(root, 0)])
 
-                ls[depth].append(root1.val)
-                traverse(root1.left, depth + 1, ls)
-                traverse(root1.right, depth + 1, ls)
-        traverse(root, 0, ans)
+        ans = []
+        while q:
+            cur, layer = q.popleft()
+            if len(ans) == layer:
+                ans.append([])
+            ans[-1].append(cur.val)
+            if cur.left:
+                q.append((cur.left, layer + 1))
+            if cur.right:
+                q.append((cur.right, layer + 1))
         return ans
